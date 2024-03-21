@@ -1,10 +1,13 @@
-package shop.mtcoding.blog.controller;
+package shop.mtcoding.blog.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@RequiredArgsConstructor
 @Controller
 public class UserController {
+    private final UserRepository userRepository;
 
     @GetMapping("/join-form")
     public String joinForm() {
