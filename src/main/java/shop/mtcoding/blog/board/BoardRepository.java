@@ -35,4 +35,15 @@ public class BoardRepository {
         return boardList;
 
     }
+
+    public Board findById(Integer boardId) {
+        String q = """
+                select * from board_tb where id = ?
+                """;
+        Query query = em.createNativeQuery(q, Board.class);
+        query.setParameter(1, boardId);
+        Board board = (Board) query.getSingleResult();
+        return board;
+
+    }
 }

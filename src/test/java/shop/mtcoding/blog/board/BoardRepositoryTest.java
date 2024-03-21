@@ -16,6 +16,23 @@ public class BoardRepositoryTest {
     private BoardRepository boardRepository;
 
     @Test
+    public void findById_test() {
+        //given
+        Integer id = 1;
+
+        //when
+        Board board = boardRepository.findById(id);
+
+        //then
+        System.out.println("board_test : " + board.getTitle());
+        System.out.println("board_test : " + board.getContent());
+
+        Assertions.assertThat(board.getContent()).isEqualTo("내용1");
+        Assertions.assertThat(board.getTitle()).isEqualTo("제목1");
+
+    }
+
+    @Test
     public void findAll_test() {
         //given
 
