@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Repository
 public class BoardRepository {
@@ -21,6 +23,16 @@ public class BoardRepository {
         query.setParameter(1, requestDTO.getTitle());
         query.setParameter(2, requestDTO.getContent());
         query.executeUpdate();
+
+    }
+
+    public List<Board> findAll() {
+        String q = """
+                select * from board_tb order by id desc 
+                """;
+        Query query = em.createNativeQuery(q, Board.class);
+        List<Board> boardList =  query.getResultList();
+        return boardList;
 
     }
 }
