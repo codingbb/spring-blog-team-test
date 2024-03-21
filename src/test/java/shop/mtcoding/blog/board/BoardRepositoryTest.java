@@ -16,6 +16,18 @@ public class BoardRepositoryTest {
     private BoardRepository boardRepository;
 
     @Test
+    public void delete_test() {
+        Integer id = 1;
+
+        boardRepository.delete(id);
+
+        List<Board> boardList = boardRepository.findAll();
+        Assertions.assertThat(boardList.size()).isEqualTo(3);
+
+    }
+
+
+    @Test
     public void findById_test() {
         //given
         Integer id = 1;

@@ -14,6 +14,16 @@ import java.util.List;
 public class BoardController {
     private final BoardRepository boardRepository;
 
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id) {
+        Board board = boardRepository.findById(id);
+        boardRepository.delete(board.getId());
+
+        return "redirect:/";
+
+    }
+
+
     @GetMapping("/" )
     public String index(HttpServletRequest request) {
         List<Board> boardList = boardRepository.findAll();
@@ -21,7 +31,6 @@ public class BoardController {
 
         return "index";
     }
-
 
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO requestDTO) {
