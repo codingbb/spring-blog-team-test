@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,22 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Test
+    public void updateById_test() {
+        BoardRequest.UpdateDTO requestDTO = new BoardRequest.UpdateDTO();
+        requestDTO.setTitle("허허");
+        requestDTO.setContent("후후");
+
+        Integer id = 1;
+
+        boardRepository.updateById(id, requestDTO);
+
+        List<Board> boardList = boardRepository.findAll();
+        Assertions.assertThat(boardList.size()).isEqualTo(4);
+        Assertions.assertThat(boardList.get(3).getTitle()).isEqualTo("허허");
+
+    }
 
     @Test
     public void delete_test() {

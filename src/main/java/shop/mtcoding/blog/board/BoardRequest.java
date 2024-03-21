@@ -12,4 +12,11 @@ public class BoardRequest {
 
     }
 
+    @Data
+    public static class UpdateDTO {
+        private Integer id;
+        private String title;
+        private String content;
+    }
+
 }
