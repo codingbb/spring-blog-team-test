@@ -87,7 +87,7 @@ public class BoardRepositoryTest {
         List<Board> boardList = boardRepository.findAll();
 
         //then
-        System.out.println("boardList_test : " + boardList);
+        System.out.println("boardList_test : ");
         System.out.println("boardList_test : " + boardList.size());
 
         Assertions.assertThat(boardList.size()).isEqualTo(4);
