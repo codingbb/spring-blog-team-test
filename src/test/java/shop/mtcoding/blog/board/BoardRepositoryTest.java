@@ -42,6 +42,8 @@ public class BoardRepositoryTest {
 
         boardRepository.deleteById(id);
 
+        System.out.println("deleteById_test : " + boardRepository.findAll().size());
+
         List<Board> boardList = boardRepository.findAll();
         Assertions.assertThat(boardList.size()).isEqualTo(3);
 
