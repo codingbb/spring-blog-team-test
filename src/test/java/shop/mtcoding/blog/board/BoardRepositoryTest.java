@@ -15,6 +15,8 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private EntityManager em;
 
     @Test
     public void updateById_test() {
@@ -36,7 +38,7 @@ public class BoardRepositoryTest {
     public void delete_test() {
         Integer id = 1;
 
-        boardRepository.delete(id);
+        boardRepository.deleteById(id);
 
         List<Board> boardList = boardRepository.findAll();
         Assertions.assertThat(boardList.size()).isEqualTo(3);
@@ -55,11 +57,27 @@ public class BoardRepositoryTest {
         //then
         System.out.println("board_test : " + board.getTitle());
         System.out.println("board_test : " + board.getContent());
+        System.out.println("board_test : " + board.getUser().getUsername());
 
         Assertions.assertThat(board.getContent()).isEqualTo("내용1");
         Assertions.assertThat(board.getTitle()).isEqualTo("제목1");
 
     }
+
+    @Test
+    public void findByIdJoinUser_test() {
+        //given
+        Integer id = 2;
+
+        //when
+        Board board = boardRepository.findByIdJoinUser(id);
+
+        //then
+        System.out.println(board);
+        Assertions.assertThat(board.getContent()).isEqualTo("내용2");
+
+    }
+
 
     @Test
     public void findAll_test() {
@@ -78,11 +96,10 @@ public class BoardRepositoryTest {
 
     @Test
     public void save_test() {
-        BoardRequest.SaveDTO requestDTO = new BoardRequest.SaveDTO();
-        requestDTO.setTitle("훗");
-        requestDTO.setContent("안녕");
-
-        boardRepository.save(requestDTO);
+//        Board board = new Board("훗", "하하");
+//        boardRepository.save(board);
+//
+//        System.out.println("board_test : " + board);
 
     }
 

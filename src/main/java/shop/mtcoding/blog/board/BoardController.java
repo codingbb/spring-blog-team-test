@@ -16,8 +16,7 @@ public class BoardController {
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, BoardRequest.UpdateDTO requestDTO) {
-        Board board = boardRepository.findById(id);
-        boardRepository.updateById(board.getId(), requestDTO);
+        boardRepository.updateById(id, requestDTO);
 
         return "redirect:/board/" + id;
     }
@@ -34,11 +33,12 @@ public class BoardController {
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable Integer id) {
         Board board = boardRepository.findById(id);
-        boardRepository.delete(board.getId());
+        boardRepository.deleteById(board.getId());
 
         return "redirect:/";
     }
 
+    //완
     @GetMapping("/" )
     public String index(HttpServletRequest request) {
         List<Board> boardList = boardRepository.findAll();
@@ -47,21 +47,23 @@ public class BoardController {
         return "index";
     }
 
+    //완
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO requestDTO) {
-        boardRepository.save(requestDTO);
+        boardRepository.save(requestDTO.toEntity());
         return "redirect:/";
     }
 
+    //완
     @GetMapping("/board/save-form")
     public String saveForm() {
         return "board/save-form";
     }
 
-
+    //완
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id, HttpServletRequest request) {
-        Board board = boardRepository.findById(id);
+        Board board = boardRepository.findByIdJoinUser(id);
         request.setAttribute("board", board);
 
         return "board/detail";

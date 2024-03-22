@@ -14,60 +14,53 @@ public class BoardRepository {
     private final EntityManager em;
 
     @Transactional
-    public void save(BoardRequest.SaveDTO requestDTO) {
-        String q = """
-                insert into board_tb (title, content, created_at) values (?, ?, now())
-                """;
-
-        Query query = em.createNativeQuery(q);
-        query.setParameter(1, requestDTO.getTitle());
-        query.setParameter(2, requestDTO.getContent());
-        query.executeUpdate();
+    public Board save(Board board) {
+        em.persist(board);
+        return board;
 
     }
 
     public List<Board> findAll() {
         String q = """
-                select * from board_tb order by id desc 
+                select b from Board b order by b.id desc
                 """;
-        Query query = em.createNativeQuery(q, Board.class);
+        Query query = em.createQuery(q, Board.class);
         List<Board> boardList =  query.getResultList();
         return boardList;
 
     }
 
     public Board findById(Integer boardId) {
-        String q = """
-                select * from board_tb where id = ?
-                """;
-        Query query = em.createNativeQuery(q, Board.class);
-        query.setParameter(1, boardId);
-        Board board = (Board) query.getSingleResult();
+        Board board = em.find(Board.class, boardId);
         return board;
 
     }
 
     @Transactional
-    public void delete(Integer boardId) {
+    public void deleteById(Integer boardId) {
         String q = """
-                delete from board_tb where id = ?
+                delete from Board b where b.id = :id
                 """;
-        Query query = em.createNativeQuery(q);
-        query.setParameter(1, boardId);
+        Query query = em.createQuery(q);
+        query.setParameter("id", boardId);
         query.executeUpdate();
 
     }
 
     @Transactional
     public void updateById(Integer boardId, BoardRequest.UpdateDTO requestDTO) {
-        String q = """
-                update board_tb set title = ?, content = ? where id = ?
-                """;
-        Query query = em.createNativeQuery(q);
-        query.setParameter(1, requestDTO.getTitle());
-        query.setParameter(2, requestDTO.getContent());
-        query.setParameter(3, boardId);
-        query.executeUpdate();
+        Board board = findById(boardId);
+        board.update(requestDTO);
 
+    }
+
+    public Board findByIdJoinUser(Integer id) {
+        String q = """
+                select b from Board b join fetch b.user u where b.id = :id
+                """;
+        Query query = em.createQuery(q, Board.class);
+        query.setParameter("id", id);
+        Board board = (Board) query.getSingleResult();
+        return board;
     }
 }
