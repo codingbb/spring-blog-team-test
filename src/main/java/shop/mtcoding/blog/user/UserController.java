@@ -12,9 +12,9 @@ public class UserController {
     private final UserRepository userRepository;
     private final HttpSession session;
 
-    @PostMapping("/login")
-    public String login(UserRequest.LoginDTO requestDTO) {
-        User sessionUser = userRepository.findByUsernameAndPassword(requestDTO);
+    @PostMapping("/join")
+    public String join(UserRequest.JoinDTO requestDTO) {
+        User sessionUser = userRepository.save(requestDTO.toEntity());
         session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
@@ -23,6 +23,14 @@ public class UserController {
     @GetMapping("/join-form")
     public String joinForm() {
         return "user/join-form";
+    }
+
+    @PostMapping("/login")
+    public String login(UserRequest.LoginDTO requestDTO) {
+        User sessionUser = userRepository.findByUsernameAndPassword(requestDTO);
+        session.setAttribute("sessionUser", sessionUser);
+
+        return "redirect:/";
     }
 
     @GetMapping("/login-form")
