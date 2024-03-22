@@ -28,4 +28,17 @@ public class UserRepository {
         em.persist(user);
         return user;
     }
+
+    @Transactional
+    public User updateById(Integer id, UserRequest.UpdateDTO requestDTO) {
+        User user = findById(id);
+        user.update(requestDTO);
+        return user;
+    }
+
+    public User findById(Integer id) {
+        User user = em.find(User.class, id);
+        return user;
+
+    }
 }
