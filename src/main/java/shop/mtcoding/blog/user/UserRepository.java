@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.user;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,15 @@ import org.springframework.stereotype.Repository;
 public class UserRepository {
     private final EntityManager em;
 
+
+    public User findByUsernameAndPassword(UserRequest.LoginDTO requestDTO) {
+        String q = """
+                select u from User u where u.username = :username and u.password = :password
+                """;
+        Query query = em.createQuery(q, User.class);
+        query.setParameter("username", requestDTO.getUsername());
+        query.setParameter("password", requestDTO.getPassword());
+        User user = (User) query.getSingleResult();
+        return user;
+    }
 }
