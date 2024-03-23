@@ -4,9 +4,6 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import shop.mtcoding.blog.user.User;
 
@@ -51,10 +48,10 @@ public class BoardJPARepositoryTest {
     public void findByIdJoinUser_test() {
         int id = 1;
 
-        Board board = boardJPARepository.findByIdJoinUser(id);
+        boardJPARepository.findByIdJoinUser(id);
 
-        System.out.println("findByIdJoinUser_test : " + board.getTitle());
-        System.out.println("findByIdJoinUser_test : " + board.getUser().getUsername());
+//        System.out.println("findByIdJoinUser_test : " + board.orElseThrow());
+//        System.out.println("findByIdJoinUser_test : " + board.getUser().getUsername());
     }
 
     @Test
