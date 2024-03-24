@@ -5,9 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.reply.Reply;
 import shop.mtcoding.blog.user.User;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Table(name = "board_tb")
@@ -27,10 +30,11 @@ public class Board {
     private Timestamp createdAt;
 
     @Transient
-    private boolean isOwner;
+    private boolean isBoardOwner;
 
-//    @OneToMany(mappedBy = board)
-//    private Reply reply;
+    @OrderBy("id desc")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Reply> replies = new ArrayList<>();
 
     @Builder
     public Board(Integer id, String title, String content, User user, Timestamp createdAt) {
