@@ -53,7 +53,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void 글수정(Integer boardId, Integer sessionUserId, BoardRequest.UpdateDTO requestDTO) {
+    public Board 글수정(Integer boardId, Integer sessionUserId, BoardRequest.UpdateDTO requestDTO) {
         Board board = boardJPARepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글 존재하지 않음"));
 
@@ -64,11 +64,14 @@ public class BoardService {
         board.setTitle(requestDTO.getTitle());
         board.setContent(requestDTO.getContent());
 
+        return board;
+
     }
 
     @Transactional
-    public void 글쓰기(User sessionUserId, BoardRequest.SaveDTO requestDTO) {
-        boardJPARepository.save(requestDTO.toEntity(sessionUserId));
+    public Board 글쓰기(User sessionUserId, BoardRequest.SaveDTO requestDTO) {
+        Board board = boardJPARepository.save(requestDTO.toEntity(sessionUserId));
+        return board;
     }
 
     @Transactional
@@ -83,9 +86,11 @@ public class BoardService {
         boardJPARepository.delete(board);
     }
 
-    public List<Board> 글목록보기() {
+    public List<BoardResponse.MainDTO> 글목록보기() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        return boardJPARepository.findAll(sort);
+        List<Board> boardList = boardJPARepository.findAll(sort);
+
+        return boardList.stream().map(board -> new BoardResponse.MainDTO(board)).toList();
 
     }
 }

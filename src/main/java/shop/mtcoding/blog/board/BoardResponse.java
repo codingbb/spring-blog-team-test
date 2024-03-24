@@ -6,6 +6,17 @@ import shop.mtcoding.blog.user.User;
 public class BoardResponse {
 
     @Data
+    public static class MainDTO {
+        private Integer id;
+        private String title;
+
+        public MainDTO(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+        }
+    }
+
+    @Data
     public static class DetailDTO {
         private Integer id;
         private String title;

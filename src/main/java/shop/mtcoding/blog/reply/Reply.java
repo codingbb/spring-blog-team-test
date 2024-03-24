@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.reply;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -21,9 +22,11 @@ public class Reply {
     private Integer id;
     private String comment;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 

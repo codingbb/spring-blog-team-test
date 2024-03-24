@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Board {
     private String title;
     private String content;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -32,6 +34,7 @@ public class Board {
     @Transient
     private boolean isBoardOwner;
 
+    @JsonIgnore
     @OrderBy("id desc")
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Reply> replies = new ArrayList<>();

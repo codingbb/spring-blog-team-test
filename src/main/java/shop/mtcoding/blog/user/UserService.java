@@ -15,14 +15,14 @@ public class UserService {
     private final UserJPARepository userJPARepository;
 
     @Transactional
-    public void 회원가입(UserRequest.JoinDTO requestDTO) {
+    public User 회원가입(UserRequest.JoinDTO requestDTO) {
         Optional<User> userOP = userJPARepository.findByUsername(requestDTO.getUsername());
 
         if (userOP.isPresent()) {
             throw new Exception400("회원가입 중복!");
         }
 
-        userJPARepository.save(requestDTO.toEntity());
+        return userJPARepository.save(requestDTO.toEntity());
     }
 
     public User 로그인(UserRequest.LoginDTO requestDTO) {
@@ -33,11 +33,11 @@ public class UserService {
 
     }
 
-    public User 회원조회(int id) {
+    public UserResponse.DTO 회원조회(int id) {
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("회원정보 찾을 수 없음"));
 
-        return user;
+        return new UserResponse.DTO(user);
     }
 
     @Transactional

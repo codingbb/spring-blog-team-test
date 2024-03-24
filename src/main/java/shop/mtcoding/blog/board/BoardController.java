@@ -1,82 +1,69 @@
 package shop.mtcoding.blog.board;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import shop.mtcoding.blog._core.util.ApiUtil;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class BoardController {
     private final BoardRepository boardRepository;
     private final BoardService boardService;
     private final HttpSession session;
 
-    @PostMapping("/board/{id}/update")
-    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO requestDTO) {
+    //TODO : 글 목록조회 api 필요
+    //TODO : 글 상세보기 api 필요
+    //TODO : 글 조회(업데이트폼) api 필요
+
+    @GetMapping("/api/boards/{id}/detail")
+    public ResponseEntity<?> detail(@PathVariable Integer id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.글수정(id, sessionUser.getId(), requestDTO);
-        return "redirect:/board/" + id;
-
+        Board board = boardService.글상세보기(id, sessionUser);
+        return ResponseEntity.ok(new ApiUtil(board));
     }
 
-    @GetMapping("/board/{id}/update-form")
-    public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
+    @GetMapping("/api/boards/{id}")
+    public ResponseEntity<?> findOne(@PathVariable Integer id) {
         Board board = boardService.글수정조회(id);
-        request.setAttribute("board", board);
-
-        return "board/update-form";
+        return ResponseEntity.ok(new ApiUtil(board));
     }
 
 
-    @PostMapping("/board/{id}/delete")
-    public String delete(@PathVariable Integer id) {
+    @GetMapping("/")
+    public ResponseEntity<?> main() {
+        List<BoardResponse.MainDTO> respDTO = boardService.글목록보기();
+        return ResponseEntity.ok(new ApiUtil(respDTO));
+    }
+
+
+    @PutMapping("/api/boards/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody BoardRequest.UpdateDTO requestDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Board board = boardService.글수정(id, sessionUser.getId(), requestDTO);
+        return ResponseEntity.ok(new ApiUtil(board));
+
+    }
+
+    @DeleteMapping("/api/boards/{id}")
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.글삭제(id, sessionUser.getId());
 
-        return "redirect:/";
+        return ResponseEntity.ok(new ApiUtil(null));
     }
 
     //완
-    @GetMapping("/")
-    public String index(HttpServletRequest request) {
-        List<Board> boardList = boardService.글목록보기();
-        request.setAttribute("boardList", boardList);
-
-        return "index";
-    }
-
-    //완
-    @PostMapping("/board/save")
-    public String save(BoardRequest.SaveDTO requestDTO) {
+    @PostMapping("/api/boards")
+    public ResponseEntity<?> save(@RequestBody BoardRequest.SaveDTO requestDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardService.글쓰기(sessionUser, requestDTO);
+        Board board = boardService.글쓰기(sessionUser, requestDTO);
 
-        return "redirect:/";
-    }
-
-    //완
-    @GetMapping("/board/save-form")
-    public String saveForm() {
-        return "board/save-form";
-    }
-
-    //완
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable Integer id, HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardService.글상세보기(id,sessionUser);
-
-        request.setAttribute("board", board);
-        System.out.println("서버 사이드 랜더링 직전에는 Board와 User만 조회된 상태이다~~~~~~");
-        return "board/detail";
-
+        return ResponseEntity.ok(new ApiUtil(board));
     }
 
 }
