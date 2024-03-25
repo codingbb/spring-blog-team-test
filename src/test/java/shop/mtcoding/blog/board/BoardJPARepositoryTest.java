@@ -19,6 +19,14 @@ public class BoardJPARepositoryTest {
     private EntityManager em;
 
     @Test
+    public void findAllWithReplyCount_test() {
+
+        List<BoardResponse.CountDTO> boardCountDTOList = boardJPARepository.findAllWithReplyCount();
+        System.out.println(boardCountDTOList);
+
+    }
+
+    @Test
     public void save_test() {
         User sessionUsr = User.builder().id(1).build();
         Board board = Board.builder()

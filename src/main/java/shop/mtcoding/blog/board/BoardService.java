@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.errors.exception.Exception403;
 import shop.mtcoding.blog._core.errors.exception.Exception404;
+import shop.mtcoding.blog.reply.Reply;
+import shop.mtcoding.blog.reply.ReplyJPARepository;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
@@ -14,36 +16,50 @@ import java.util.List;
 @Service
 public class BoardService {
     private final BoardJPARepository boardJPARepository;
+    private final ReplyJPARepository replyJPARepository;
 
-    public Board 글상세보기(Integer boardId, User sessionUser) {
+    //DTO 방법 2 쌤이 좋아하는 방식 2번 조회
+    public BoardResponse.DetailDTO 글상세보기(Integer boardId, User sessionUser) {
         Board board = boardJPARepository.findByIdJoinUser(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
-        boolean isBoardOwner = false;
-        if (sessionUser != null) {
-            if (board.getUser().getId() == sessionUser.getId()) {
-                isBoardOwner = true;
-            }
-        }
+        List<Reply> replyList = replyJPARepository.findByBoardIdJoinUser(boardId);
 
-        board.setBoardOwner(isBoardOwner);
+        return new BoardResponse.DetailDTO(board, replyList, sessionUser);
 
-        board.getReplies().forEach(reply -> {
-            boolean isReplyOwner = false;
-
-            if (sessionUser != null) {
-                if (reply.getUser().getId() == sessionUser.getId()) {
-                    isReplyOwner = true;
-                }
-            }
-
-            reply.setReplyOwner(isReplyOwner);
-
-        });
-
-        return board;
-//        return new BoardResponse.DetailDTO(board, sessionUser);
     }
+
+    //DTO 방법 1
+//    public BoardResponse.DetailDTO 글상세보기(Integer boardId, User sessionUser) {
+//        Board board = boardJPARepository.findByIdJoinUser(boardId)
+//                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
+
+        //DTO에서 구현해서 owner 로직 필요 없음
+//        boolean isBoardOwner = false;
+//        if (sessionUser != null) {
+//            if (board.getUser().getId() == sessionUser.getId()) {
+//                isBoardOwner = true;
+//            }
+//        }
+//
+//        board.setBoardOwner(isBoardOwner);
+//
+//        board.getReplies().forEach(reply -> {
+//            boolean isReplyOwner = false;
+//
+//            if (sessionUser != null) {
+//                if (reply.getUser().getId() == sessionUser.getId()) {
+//                    isReplyOwner = true;
+//                }
+//            }
+//
+//            reply.setReplyOwner(isReplyOwner);
+//
+//        });
+
+//        return new BoardResponse.DetailDTO(board, sessionUser);
+//        return new BoardResponse.DetailDTO(board, sessionUser);
+//    }
 
     public Board 글수정조회(Integer boardId) {
         Board board = boardJPARepository.findById(boardId)
